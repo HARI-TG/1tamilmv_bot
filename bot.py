@@ -1,7 +1,7 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-from pyrogram import Client, filters
+from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 api_id = '10261086'
@@ -10,16 +10,18 @@ bot_token = '6524742034:AAG4zKlNlSHsNnjKZ8Y3rk_eaxBiLQ2X9Hw'
 
 app = Client("my_bot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
+
 @app.on_message(filters.command("start"))
 def random_answer(client, message):
     keyboard = InlineKeyboardMarkup(
         [[InlineKeyboardButton("View Movies", callback_data="view")]]
     )
     message.reply_text(
-        "Hello👋 \n\n🗳Get latest Movies from 1Tamilmv\n\n⚙️*How to use me??*🤔\n\n✯ Please Enter */view* command and you'll get magnet link as well as link to torrent file 😌\n\nShare and Support💝",
+        "Hello👋 \n\n🗳Get latest Movies from 1Tamilmv\n\n⚙️*How to use me??*🤔\n\n✯ Please Enter */view* command and you'll get magnet link as well as a link to the torrent file 😌\n\nShare and Support💝",
         parse_mode=enums.ParseMode.HTML,
         reply_markup=keyboard,
     )
+
 
 @app.on_message(filters.command("view"))
 def start(client, message):
@@ -27,14 +29,15 @@ def start(client, message):
     tamilmv()
     keyboard = make_keyboard()
     message.reply_text(
-        "Select a Movie from the list 🙂 : ", reply_markup=keyboard, parse_mode=enums.ParseMode.HTML"
+        "Select a Movie from the list 🙂 : ", reply_markup=keyboard, parse_mode=enums.ParseMode.HTML
     )
+
 
 @Client.on_callback_query(filters.callback_query)
 async def callback_query_handler(client, callback_query):
     chat_id = callback_query.message.chat.id
     await client.send_message(chat_id, text="Here's your Movie links 🎥 ", parse_mode=enums.ParseMode.HTML)
-    
+
     for key, value in enumerate(movie_list):
         if callback_query.data == f"{key}":
             print("HI")
@@ -42,8 +45,9 @@ async def callback_query_handler(client, callback_query):
                 for i in real_dict[movie_list[int(callback_query.data)]]:
                     await client.send_message(chat_id, text=f"{i}\n\n🤖 @Tamilmv_movie_bot", parse_mode=enums.ParseMode.HTML)
                     print(real_dict[movie_list[int(callback_query.data)]])
-    
-    await client.send_message(chat_id, text="🌐 Please Join Our Status Channel", parse_mode=enums.ParseMode.HTML', reply_markup=make_keyboard())
+
+    await client.send_message(chat_id, text="🌐 Please Join Our Status Channel", parse_mode=enums.ParseMode.HTML, reply_markup=make_keyboard())
+
 
 def make_keyboard():
     markup = InlineKeyboardMarkup()
